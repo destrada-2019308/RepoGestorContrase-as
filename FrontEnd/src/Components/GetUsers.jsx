@@ -4,11 +4,16 @@ import { useRegister } from '../shared/useRegister'
 import { EditIcon, DeleteIcon } from '@chakra-ui/icons'
 
 export const GetUsers = () => { 
-    const { register, isLoading, getUsers, user } = useRegister()
+    const { register, isLoading, getUsers, user, deleteUser } = useRegister()
 
     useEffect(() => {
         getUsers()   
     }, [isLoading])  
+
+    const handleDeleteUser = async (id) => {
+        await deleteUser(id)
+    }
+
 
     return (
         <div className=' p-4'>
@@ -23,8 +28,7 @@ export const GetUsers = () => {
                             <th scope='col'>Username</th>
                             <th scope='col'>Email</th>
                             <th scope='col'>Phone</th>
-                            <th scope='col'>State</th>
-                            <th scope='col'>Editar</th>
+                            <th scope='col'>State</th> 
                             <th scope='col'>Eliminar</th>
                         </tr>
                     </thead>
@@ -37,9 +41,8 @@ export const GetUsers = () => {
                                 <td>{user.username}</td>
                                 <td>{user.email}</td>
                                 <td>{user.phone}</td>
-                                <td>{user.state}</td>
-                                <td><EditIcon/></td>
-                                <td><DeleteIcon/></td>
+                                <td>{user.state}</td> 
+                                <td><DeleteIcon onClick={() => handleDeleteUser(user.codeUser)}/></td>
                             </tr>
                         ))}
                     </tbody>

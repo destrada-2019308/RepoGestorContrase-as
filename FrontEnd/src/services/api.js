@@ -40,11 +40,21 @@ export const getUsersRequest = async () => {
     }
 }
 
+export const deleteUserRequest = async (id) => {
+    try {
+        return await apiClient.delete(`/user/deleteUser/${id}`)
+    } catch (error) {
+        console.error(error)
+        return { error: true, error}
+    }
+}
+
 //CRUD DE PASSWORD
+
 
 export const getPasswordsRequest = async (id) => {
     try {
-        return await apiClient.get(`/password/getPasswords/:${id}` )
+        return await apiClient.get(`/password/getPassword/${id}` )
     } catch (error) {
         console.error(error);
         return { error: true, error}
