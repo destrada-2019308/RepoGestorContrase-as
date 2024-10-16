@@ -99,7 +99,7 @@ export const login = async (req, res) => {
         }
 
         if(user && await checkPasswordBool(password, user.password)){
-            const [data] = await conn.query('SELECT * FROM Users WHERE username = ?', [username]);
+            const data = await conn.query('SELECT * FROM Users WHERE username = ?', [username]);
 
             return res.send({ data });
         }
@@ -134,8 +134,9 @@ export const updateUser = async (req, res) => {
 export const deleteUser = async (req, res) => {
     const conn = await pool.getConnection();
     try {
-        const { codeUser } = req.params;
-        await conn.query('DELETE FROM Users WHERE codeUser = ?', [codeUser]);
+        const { id } = req.params;
+        await conn.query('DELETE FROM Users WHERE codeUser = ?', [id]);
+        console.log(id);
         return res.send({ message: 'Usuario eliminado exitosamente' });
     } catch (error) {
         console.error(error);

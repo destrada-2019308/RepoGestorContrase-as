@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS Passwords (
     codeUser INT NOT NULL,
     password VARCHAR(256) NOT NULL,
     sitioWeb VARCHAR(125) NOT NULL,
+    PRIMARY KEY PK_codePassword(codePassword),
     CONSTRAINT FK_Passwords_Users FOREIGN KEY (codeUser) 
-        REFERENCES Users(codeUser),
-    PRIMARY KEY PK_codePassword(codePassword)
+        REFERENCES Users(codeUser)
 )

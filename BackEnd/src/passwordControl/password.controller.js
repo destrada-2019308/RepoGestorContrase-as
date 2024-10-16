@@ -19,8 +19,11 @@ export const addPassword = async (req, res) => {
 export const getPassword = async (req, res) => {
     const conn = await pool.getConnection();
     try {
-        const { codeUser } = req.params;
-        const [data] = await conn.query('SELECT * FROM Passwords WHERE codeUser = ?', [codeUser]);
+        const { id } = req.params;
+        console.log(id);
+        
+        const data = await conn.query('SELECT * FROM Passwords WHERE codeUser = ?', [id]);
+ 
         return res.send({ data });
     } catch (error) {
         console.error(error);
@@ -31,8 +34,8 @@ export const getPassword = async (req, res) => {
 export const deletePassword = async (req, res) => {
     const conn = await pool.getConnection();
     try {
-        const { codePassword } = req.params;
-        await conn.query('DELETE FROM Passwords WHERE codePassword = ?', [codePassword]);
+        const { id } = req.params;
+        await conn.query('DELETE FROM Passwords WHERE codePassword = ?', [id]);
         return res.send({ message: 'Password eliminado exitosamente' });
     } catch (error) {
         console.error(error);
