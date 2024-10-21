@@ -7,15 +7,14 @@ import userRoutes from "../src/user/user.routes.js";
 import passwordRoutes from "../src/passwordControl/password.routes.js";
 
 const app = express();
-config();
-const port = process.env.PORT || 3056;
+config(); 
+const port = process.env.PORT || 3000;
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-
-app.use(morgan("dev"));
-app.use(cors());
-app.use(helmet());
+app.use(express.urlencoded({extended: false}))
+app.use(express.json())
+app.use(cors()) //Aceptar o denegar solicitudes de diferentes orígenes (local, remoto) / políticas de acceso
+app.use(helmet()) //Aplica capa de seguridad básica al servidor
+app.use(morgan('dev')) //Logs de solicitudes al servidor HTTP
 
 app.use('/user', userRoutes);
 app.use('/password', passwordRoutes);

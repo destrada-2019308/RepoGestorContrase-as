@@ -1,5 +1,4 @@
-'use strict'
-
+ 
 import { Router } from "express";
 import { getUsers, addUser, login, updateUser, deleteUser } from "./user.controller.js";
 

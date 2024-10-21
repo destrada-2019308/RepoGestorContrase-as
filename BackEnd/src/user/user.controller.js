@@ -1,49 +1,50 @@
 'use strict'
-
-import pool from "../../configs/db.js"
+ 
+import User from './user.model.js';
 import nodemailer from 'nodemailer';
 import { encrypt, checkPassword, checkPasswordBool } from "../utils/validator.js";
 
 export const getUsers = async (req, res) => {
-    const conn = await pool.getConnection();
+ 
     try {
-        const data = await conn.query('SELECT * FROM Users');
+        const data = await User.find();
         return res.send({ data });
     } catch (error) {
         console.error(error);
         return res.status(500).send({ message: 'Error al obtener los usuarios' });
-    }finally{
-        conn.release();
     }
 }
 
-export const addUser = async (req, res) => {
-    const conn = await pool.getConnection();
+export const addUser = async (req, res) => { 
     try {
-        const { nameUser, lastname, username, password, email, phone, state } = req.body;
-        console.log(password)
+        const  data  = req.body;
+        console.log(data.username)   
         //Buscar usuarios por username, email y phone
-        const users = await conn.query('SELECT * FROM Users WHERE username = ? OR email = ? OR phone = ?', [username, email, phone]);
-        if (users.length > 0) {
-            return res.status(400).send({ message: 'El usuario con el usernmae, email o phone ya existe, Verifique que los datos no sean iguales' });
+    
+        const user = await User.findOne({username: data.username})
+        if(user){
+            return res.status(404).send({ message: 'El usuario ya existe' });
         }
 
-        let newPassword = await encrypt(password)
+        data.password = await encrypt(data.password)
 
-        await conn.query('INSERT INTO Users (nameUser, lastname, username, email, phone, password, state) VALUES (?, ?, ?, ?, ?, ?, ?)', [nameUser, lastname, username, email, phone, newPassword, state]);
-        let to = email 
-        let subject = 'Cuenta Creada en Gestor de usuarios'
-        let text = `Hola ${nameUser} ${lastname}, su usuario y contraseña es ${username},${password}`
-        validateEmail(to, subject, text)
-        let passwordDesencriptada = await checkPassword(password, newPassword)
+        const dataUser = [data.nameUser, data.lastname]
+        let users = new User(data)   
+        await users.save()
+        
+        let passwordDesencriptada = await checkPassword(data.password)
         console.log(passwordDesencriptada)
 
-        return res.send({ message: 'Usuario registrado exitosamente' });
+        let to = data.email 
+        let subject = 'Cuenta Creada en Gestor de usuarios'
+        let text = `Hola ${data.nameUser} ${data.lastname}, su usuario y contraseña es ${data.username},${passwordDesencriptada}`
+        validateEmail(to, subject, text)
+        
+
+        return res.send({message: `User save successfully`, users, dataUser})
     } catch (error) {
         console.error(error);
         return res.status(500).send({ message: 'Error al registrar el usuario' });   
-    }finally{
-        conn.release();
     }
 }
 
@@ -87,31 +88,28 @@ export const emailValidate = async (req, res) => {
 }
 
 
-export const login = async (req, res) => {
-    const conn = await pool.getConnection();
+export const login = async (req, res) => { 
     try {
         const { username, password } = req.body;
 
-        const [user] = await conn.query('SELECT * FROM Users WHERE username = ?', [username]);
+        let user = await User.findOne({ username: username})
+ 
+        if(!user) return res.status(404).send({message: `The user with account: ${username} doesn't exists   `})
 
-        if (!user) {
-            return res.status(404).send({ message: 'Usuario no encontrado' });
-        }
-
-        if(user && await checkPasswordBool(password, user.password)){
-            const data = await conn.query('SELECT * FROM Users WHERE username = ?', [username]);
-
-            return res.send({ data });
-        }
-
-        return res.status(401).send({ message: 'Contraseña incorrecta o el Usuario no existe' });
+            if(user && await checkPasswordBool(password, user.password)){
+                let loggedUser = {
+                    uid : user._id,
+                    username : user.username,
+                    name: user.nameUser
+                } 
+                return res.send({message: `Hello ${loggedUser.name}`, loggedUser})
+            }
+            return res.status(404).send({ message: 'Invalid credentials '})
 
     } catch (error) {
         console.error(error);
         return res.status(500).send({ message: 'Error al registrar el usuario' });
-    }finally{
-        conn.release();
-    }
+    } 
 }
 
 export const updateUser = async (req, res) => {
@@ -131,17 +129,17 @@ export const updateUser = async (req, res) => {
     }
 }
 
-export const deleteUser = async (req, res) => {
-    const conn = await pool.getConnection();
+export const deleteUser = async (req, res) => { 
     try {
         const { id } = req.params;
-        await conn.query('DELETE FROM Users WHERE codeUser = ?', [id]);
-        console.log(id);
-        return res.send({ message: 'Usuario eliminado exitosamente' });
+        
+        let deletedUser = await User.findOneAndDelete({_id: id})
+            
+        if(!deletedUser) return res.status(404).send({message: 'Account not found and not delete'})
+        
+        return res.send({message: `Account with username ${deletedUser.username} delete successfully`}) 
     } catch (error) {
         console.error(error);
         return res.status(500).send({ message: 'Error al eliminar el usuario' });
-    }finally{
-        conn.release();
-    }
+    } 
 }

@@ -1,13 +1,13 @@
 'use strict'
 
-import pool from "../../configs/db.js"
+import Password from './password.model.js';
 
-export const addPassword = async (req, res) => {
-    const conn = await pool.getConnection();
+export const addPassword = async (req, res) => { 
     try {
-        const { codeUser, password, sitioWeb } = req.body;
+        const data= req.body;
     
-        await conn.query('INSERT INTO Passwords (codeUser, password, sitioWeb) VALUES (?, ?, ?)', [codeUser, password, sitioWeb]);
+        let password = new Password(data);
+        await password.save();
         
         return res.send({ message: 'Password registrado exitosamente' });
 
@@ -17,13 +17,13 @@ export const addPassword = async (req, res) => {
 }
 
 export const getPassword = async (req, res) => {
-    const conn = await pool.getConnection();
+
     try {
         const { id } = req.params;
         console.log(id);
         
-        const data = await conn.query('SELECT * FROM Passwords WHERE codeUser = ?', [id]);
- 
+        const data = await Password.find({user: id});
+        
         return res.send({ data });
     } catch (error) {
         console.error(error);
@@ -32,10 +32,13 @@ export const getPassword = async (req, res) => {
 }
 
 export const deletePassword = async (req, res) => {
-    const conn = await pool.getConnection();
+ 
     try {
         const { id } = req.params;
-        await conn.query('DELETE FROM Passwords WHERE codePassword = ?', [id]);
+        let deletePassword = await Password.findOneAndDelete({ _id: id });
+        
+        if (!deletePassword) return res.status(404).send({ message: 'Password not found and not delete' });
+
         return res.send({ message: 'Password eliminado exitosamente' });
     } catch (error) {
         console.error(error);
