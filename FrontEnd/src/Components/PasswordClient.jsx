@@ -18,9 +18,10 @@ export const PasswordClient = () => {
     })
 
     let user = localStorage.getItem('user')
-    //console.log(user)
-    let id = JSON.parse(user)[0].codeUser
-    //console.log(id)
+ 
+    let id = JSON.parse(user) 
+    
+    id = id.uid
     const { isPassword, getPasswords, addPassword, deletePassword } = usePassword()
 
     useEffect(() => {

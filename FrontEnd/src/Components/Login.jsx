@@ -16,7 +16,7 @@ const Login = () => {
   return (
     <StyledWrapper>
       <div className="form-container">
-        <p className="title">Login</p>
+        <p className="title">Iniciar sesión</p>
         <form className="form" onSubmit={handleOnSubmit}>
           <div className="input-group">
             <label htmlFor="username">Username</label>
@@ -43,14 +43,14 @@ const Login = () => {
              
           </div>
           <br />
-          <button className="sign">Sign in</button>
+          <button className="sign">Iniciar sesión</button>
         </form>
         <br />
 
         <p className="signup">
-          Don&apos;t have an account?
+          No tienes cuenta?
           <a rel="noopener noreferrer" href="/register" className="">
-            Sign up
+             Registro
           </a>
         </p>
       </div>

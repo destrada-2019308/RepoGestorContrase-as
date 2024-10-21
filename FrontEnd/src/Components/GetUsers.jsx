@@ -34,8 +34,8 @@ export const GetUsers = () => {
                     </thead>
                     <tbody>
                         {user && user.map((user, index) => (
-                            <tr key={user.codeUser}>
-                                <td>{user.codeUser}</td>
+                            <tr key={user._id}>
+                                <td>{user._id}</td>
                                 <td>{user.nameUser}</td>
                                 <td>{user.lastname}</td>
                                 <td>{user.username}</td>

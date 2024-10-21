@@ -27,8 +27,7 @@ const Register = () => {
   return (
     <StyledWrapper>
       <form className="form" onSubmit={handleOnSubmit}>
-        <p className="title">Register </p>
-        <p className="message">Signup now and get full access to our app. </p>
+        <p className="title">SunnyVault </p> 
         <div className="flex">
           <label>
             <input 
@@ -78,7 +77,7 @@ const Register = () => {
 
         <button className="submit">Submit</button>
         <p className="signin">
-          Already have an acount ? <a href="/">Signin</a>{" "}
+          Ya tienes cuenta? <a href="/">Iniciar sesión</a>{" "}
         </p>
       </form>
     </StyledWrapper>

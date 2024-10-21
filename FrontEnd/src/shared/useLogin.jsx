@@ -15,8 +15,10 @@ export const useLogin = () => {
 
             toast.success(res.data.message || 'Sesion iniciada')
 
-            console.log(res.data.data)
-            const user = res.data.data
+            console.log(res.data)
+            console.log(res);
+            
+            const user = res.data.loggedUser
             localStorage.setItem('user', JSON.stringify(user))
           
             navigate('/password' )
